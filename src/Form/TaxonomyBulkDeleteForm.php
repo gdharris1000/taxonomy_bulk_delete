@@ -18,7 +18,8 @@ class TaxonomyBulkDeleteForm extends FormBase {
         $vocab_names = [];
         foreach($vocabularies as $vocab) {
             $name = $vocab->get('name');
-            $vocab_names[] = [$name => $name];
+            $vid = $vocab->get('vid');
+            $vocab_names[] = [$name => $vid];
         }
 
         $form['vocabs'] = [
@@ -37,8 +38,15 @@ class TaxonomyBulkDeleteForm extends FormBase {
 
     //Submit Form
     public function submitForm(array &$form, FormStateInterface $form_state) {
-        $selected_term = $form_state['vocabs'];
-        $messenger = \Drupal::messenger()->addMessage($selected_term, self::TYPE_STATUS);
+        $selected_term = $form_state->getValue('vocabs');
+        
+        $tids = \Drupal::entityQuery('taxonomy_term')->condition('vid', $selected_term)->execute();
+        $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+        $entities = $term_storage->loadMultiple($tids);
+        $term_storage->delete($entities);
+
+
+        $messenger = \Drupal::messenger()->addMessage($selected_term);
     }
 
 
