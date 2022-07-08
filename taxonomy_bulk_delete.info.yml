@@ -1,0 +1,4 @@
+name: Taxonomy Bulk Delete Tool
+type: module
+description: Tool to bulk-delete all vocabulary from a chosen Taxonomy term
+core_version_requirement: ^8 || ^9
