@@ -2,8 +2,8 @@
 
 namespace Drupal\taxonomy_bulk_delete\Form;
 
-use Drupal\Core\FormBase;
-use Drupal\Core\FormStateInterface;
+use Drupal\Core\Form\FormBase;
+use Drupal\Core\Form\FormStateInterface;
 
 class TaxonomyBulkDeleteForm extends FormBase {
 
@@ -14,12 +14,31 @@ class TaxonomyBulkDeleteForm extends FormBase {
 
     //Build Form
     public function buildForm(array $form, FormStateInterface $form_state) {
+        $vocabularies = \Drupal::entityTypeManager()->getStorage('taxonomy_vocabulary')->loadMultiple();
+        $vocab_names = [];
+        foreach($vocabularies as $vocab) {
+            $name = $vocab->get('name');
+            $vocab_names[] = [$name => $name];
+        }
 
+        $form['vocabs'] = [
+            '#type' => 'select',
+            '#title' => 'Select Type',
+            '#options' => $vocab_names,
+            ];
+
+        $form['submit'] = [
+            '#type' => 'submit',
+            '#value' => 'OK'
+        ];
+
+        return $form;
     }
 
     //Submit Form
-    public function submitForm(array $form, FormStateInterface $form_state) {
-        
+    public function submitForm(array &$form, FormStateInterface $form_state) {
+        $selected_term = $form_state['vocabs'];
+        $messenger = \Drupal::messenger()->addMessage($selected_term, self::TYPE_STATUS);
     }
 
 
