@@ -1,0 +1,7 @@
+taxonomy_bulk_delete:
+  path: "/admin/taxonomy_bulk_delete"
+  defaults:
+    _form: 'Drupal\taxonomy_bulk_delete\Form\TaxonomyBulkDeleteForm'
+    _title: "Taxonomy Bulk Delete Tool"
+  requirements:
+    _permission: "Administrator"
