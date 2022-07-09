@@ -1,0 +1,5 @@
+taxonomy_bulk_delete:
+  title: "Taxonomy Bulk Delete"
+  description: "Delete all vocabulary from a chosen taxonomy term"
+  route_name: taxonomy_bulk_delete
+  parent: "system.admin_config_content"
