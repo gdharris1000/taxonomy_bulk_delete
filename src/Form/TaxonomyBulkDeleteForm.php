@@ -28,7 +28,7 @@ class TaxonomyBulkDeleteForm extends FormBase {
         //List the available taxonomy terms
         $form['vocabs'] = [
             '#type' => 'select',
-            '#title' => 'Select Type',
+            '#title' => 'Select Term',
             '#options' => $vocab_names,
             ];
 
@@ -45,22 +45,32 @@ class TaxonomyBulkDeleteForm extends FormBase {
     public function submitForm(array &$form, FormStateInterface $form_state) {
         //Get selected taxonomy term
         $selected_term = $form_state->getValue('vocabs');
-        
-        //Get IDs for each term
-        $tids = \Drupal::entityQuery('taxonomy_term')->condition('vid', $selected_term)->execute();
-        
-        //Get taxonomy entity
-        $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
-        
-        //Load terms from IDs
-        $entities = $term_storage->loadMultiple($tids);
-        
-        //Delete terms
-        $term_storage->delete($entities);
+        if (isset($selected_term)) {   
+            //Get IDs for each term
+            $tids = \Drupal::entityQuery('taxonomy_term')->condition('vid', $selected_term)->execute();
+            
+            //Get taxonomy entity
+            $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+            
+            //Load terms from IDs
+            $entities = $term_storage->loadMultiple($tids);
+            
+            try {
+                //Delete terms
+                $term_storage->delete($entities);
 
-        //Confirmation message
-        $messenger = \Drupal::messenger()->addMessage(count($tids)." deleted from ".$selected_term);
+                //Confirmation message
+                $messenger = \Drupal::messenger()->addMessage(count($tids)." deleted from ".$selected_term);
+            }
+            catch(Exception $e) {
+                \Drupal::logger('taxonomy_bulk_delete')->alert($e);
+                $messenger = \Drupal::messenger()->addError('Unable to delete vocabulary');    
+            }
+            
+        } else {
+            $messenger = \Drupal::messenger()->addError('Invalid Taxonomy term selected');
+        }
+        
     }
-
 
 }
