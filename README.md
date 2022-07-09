@@ -1,8 +1,12 @@
-# Taxonomy Bulk Delete Module For Drupal 8 / 9
+# Taxonomy Bulk Delete Drupal Module
 
 ## About
 
 This module allows the user to perform a bulk deletion of all vocabulary from a chosen taxonomy term.
+
+### Compatibility
+
+This module will work with Drupal 8 or 9.
 
 ## Installation
 
